@@ -209,7 +209,6 @@ function getRectangleString(width, height) {
   const simbolHeight = (`${'\n'}${'│'}${' '.repeat(width - 2)}${'│'}`.repeat(height - 2));
   const result = `${simbolWidthUp}${simbolHeight}${'\n'}${simbolWidthDown}${'\n'}`;
   return result;
-//    console.log(simbolHeight)
 }
 
 
@@ -229,8 +228,29 @@ function getRectangleString(width, height) {
  *    => 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm'
  *
  */
-function encodeToRot13(/* str */) {
-  throw new Error('Not implemented');
+function encodeToRot13(str) {
+  const bigChar = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+  const bigCharReverse = ['N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'];
+  const miniChar = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', ' ', '?', '!'];
+  const miniCharReverse = ['n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', ' ', '?', '!'];
+  const result = [];
+  const arrayChar = str.split('');
+  for (let i = 0; i < arrayChar.length; i += 1) {
+    for (let j = 0; j < arrayChar[i].length; j += 1) {
+      for (let k = 0; k < miniChar.length; k += 1) {
+        if (arrayChar[i][j] === miniChar[k]) {
+          result.push(miniCharReverse[k]);
+        }
+      }
+      for (let b = 0; b < bigChar.length; b += 1) {
+        if (arrayChar[i][j] === bigChar[b]) {
+          result.push(bigCharReverse[b]);
+        }
+      }
+    }
+  }
+
+  return result.join('');
 }
 
 /**
@@ -246,8 +266,17 @@ function encodeToRot13(/* str */) {
  *   isString('test') => true
  *   isString(new String('test')) => true
  */
-function isString(/* value */) {
-  throw new Error('Not implemented');
+function isString(value) {
+  if (typeof value === 'string') {
+    return true;
+  }
+  if (value instanceof Array && value[0] instanceof String) {
+    return true;
+  }
+  if (value instanceof String) {
+    return true;
+  }
+  return false;
 }
 
 
@@ -275,8 +304,15 @@ function isString(/* value */) {
  *   'Q♠' => 50
  *   'K♠' => 51
  */
-function getCardId(/* value */) {
-  throw new Error('Not implemented');
+function getCardId(value) {
+  let id = null;
+  const cards = ['A♣', '2♣', '3♣', '4♣', '5♣', '6♣', '7♣', '8♣', '9♣', '10♣', 'J♣', 'Q♣', 'K♣', 'A♦', '2♦', '3♦', '4♦', '5♦', '6♦', '7♦', '8♦', '9♦', '10♦', 'J♦', 'Q♦', 'K♦', 'A♥', '2♥', '3♥', '4♥', '5♥', '6♥', '7♥', '8♥', '9♥', '10♥', 'J♥', 'Q♥', 'K♥', 'A♠', '2♠', '3♠', '4♠', '5♠', '6♠', '7♠', '8♠', '9♠', '10♠', 'J♠', 'Q♠', 'K♠'];
+  for (let i = 0; i < cards.length; i += 1) {
+    if (value === cards[i]) {
+      id = i;
+    }
+  }
+  return id;
 }
 
 
