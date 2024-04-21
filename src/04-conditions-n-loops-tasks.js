@@ -135,8 +135,13 @@ function isTriangle(a, b, c) {
  *   { top:20, left:20, width: 20, height: 20 }    =>  false
  *
  */
-function doRectanglesOverlap(/* rect1, rect2 */) {
-  throw new Error('Not implemented');
+function doRectanglesOverlap(rect1, rect2) {
+  const result = !(rect1.left + rect1.width < rect2.left
+  || rect1.left > rect2.left + rect2.width
+  || rect1.top + rect1.height < rect2.top
+  || rect1.top > rect2.top + rect2.height);
+
+  return result;
 }
 
 
@@ -166,8 +171,16 @@ function doRectanglesOverlap(/* rect1, rect2 */) {
  *   { center: { x:0, y:0 }, radius:10 },  { x:10, y:10 }   => false
  *
  */
-function isInsideCircle(/* circle, point */) {
-  throw new Error('Not implemented');
+function isInsideCircle(circle, point) {
+  const a = point.x - circle.center.x;
+  const b = point.y - circle.center.y;
+
+  const c = Math.sqrt(a * a + b * b);
+
+  if (c < circle.radius) {
+    return true;
+  }
+  return false;
 }
 
 
@@ -182,8 +195,9 @@ function isInsideCircle(/* circle, point */) {
  *   'abracadabra'  => 'c'
  *   'entente' => null
  */
-function findFirstSingleChar(/* str */) {
-  throw new Error('Not implemented');
+function findFirstSingleChar(str) {
+  const chars = str.split('');
+  return [...chars].find((el, ind, arr) => arr.indexOf(el) === arr.lastIndexOf(el)) || null;
 }
 
 
@@ -209,8 +223,13 @@ function findFirstSingleChar(/* str */) {
  *   5, 3, true, true   => '[3, 5]'
  *
  */
-function getIntervalString(/* a, b, isStartIncluded, isEndIncluded */) {
-  throw new Error('Not implemented');
+function getIntervalString(a, b, isStartIncluded, isEndIncluded) {
+  const firstSymbol = isStartIncluded ? '[' : '(';
+  const secondSymbol = isEndIncluded ? ']' : ')';
+
+  const result = `${firstSymbol}${Math.min(a, b)}, ${Math.max(a, b)}${secondSymbol}`;
+
+  return result;
 }
 
 
@@ -226,8 +245,8 @@ function getIntervalString(/* a, b, isStartIncluded, isEndIncluded */) {
  * 'rotator' => 'rotator'
  * 'noon' => 'noon'
  */
-function reverseString(/* str */) {
-  throw new Error('Not implemented');
+function reverseString(str) {
+  return str.split('').reverse().join('');
 }
 
 
@@ -243,8 +262,8 @@ function reverseString(/* str */) {
  *   87354 => 45378
  *   34143 => 34143
  */
-function reverseInteger(/* num */) {
-  throw new Error('Not implemented');
+function reverseInteger(num) {
+  return num.toString().split('').reverse().join('');
 }
 
 
@@ -268,8 +287,19 @@ function reverseInteger(/* num */) {
  *   5436468789016589 => false
  *   4916123456789012 => false
  */
-function isCreditCardNumber(/* ccn */) {
-  throw new Error('Not implemented');
+function isCreditCardNumber(ccn) {
+  const numbers = ccn.toString().split('').map(Number);
+  const summary = numbers.reduceRight((acc, dig, ind) => {
+    let twice = dig;
+    if ((numbers.length - ind) % 2 === 0) {
+      twice *= 2;
+      if (twice > 9) {
+        twice -= 9;
+      }
+    }
+    return acc + twice;
+  }, 0);
+  return summary % 10 === 0;
 }
 
 /**
@@ -286,14 +316,18 @@ function isCreditCardNumber(/* ccn */) {
  *   10000 ( 1+0+0+0+0 = 1 ) => 1
  *   165536 (1+6+5+5+3+6 = 26,  2+6 = 8) => 8
  */
-function getDigitalRoot(/* num */) {
-  throw new Error('Not implemented');
+function getDigitalRoot(num) {
+  if (num < 10) {
+    return num;
+  }
+  const sum = num.toString().split('').reduce((acc, number) => acc + parseInt(number, 10), 0);
+  return getDigitalRoot(sum);
 }
 
 
 /**
  * Returns true if the specified string has the balanced brackets and false otherwise.
- * Balanced means that is, whether it consists entirely of pairs of opening/closing brackets
+ * Balanced means that is, whether it consists entirely of pairs of starting/closing brackets
  * (in that order), none of which mis-nest.
  * Brackets include [],(),{},<>
  *
@@ -312,8 +346,35 @@ function getDigitalRoot(/* num */) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
+function isBracketsBalanced(str) {
+  const result = [];
+  const start = ['[', '{', '(', '<'];
+  const end = [']', '}', ')', '>'];
+
+  const string = str.split('');
+  let finish;
+  let begining;
+
+  for (let i = 0; i < string.length; i += 1) {
+    begining = start.indexOf(string[i]);
+    if (begining !== -1) {
+      result.push(begining);
+    }
+
+    finish = end.indexOf(string[i]);
+    if (finish !== -1) {
+      begining = result.pop();
+      if (finish !== begining) {
+        return false;
+      }
+    }
+  }
+
+  if (result.length !== 0) {
+    return false;
+  }
+
+  return true;
 }
 
 
@@ -337,8 +398,15 @@ function isBracketsBalanced(/* str */) {
  *    365, 4  => '11231'
  *    365, 10 => '365'
  */
-function toNaryString(/* num, n */) {
-  throw new Error('Not implemented');
+function toNaryString(num, n) {
+  let result = '';
+  let number = num;
+  while (number > 0) {
+    const end = number % n;
+    result = end + result;
+    number = Math.floor(number / n);
+  }
+  return result || '0';
 }
 
 
@@ -354,8 +422,23 @@ function toNaryString(/* num, n */) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  if (!pathes || pathes.length === 0) {
+    return '';
+  }
+  const pathesSplit = pathes.map((string) => string.split('/'));
+  const minimum = Math.min(...pathesSplit.map((path) => path.length));
+  let result = '';
+  for (let i = 0; i < minimum; i += 1) {
+    const way = pathesSplit[0][i];
+    const check = pathesSplit.every((path) => path[i] === way);
+    if (check) {
+      result += `${way}/`;
+    } else {
+      break;
+    }
+  }
+  return result || '';
 }
 
 
